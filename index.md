@@ -12,7 +12,7 @@ systems and boards. It comes with a rich set of tools to do LXMF messaging and
 Nomad micron mesh browsing, and implements some things — such as `rnsh` remote
 management — not normally found on Reticulum nodes on embedded systems.
 
-Reticulous is built on top of the brand new [**Spangap**](https://spangap.org)
+Reticulous is built on top of the brand new [**Spangap**]({{ site.spangap_url }}/)
 *Device Application Framework*. In fact, it was developed in parallel with it,
 yielding both a highly capable Reticulum node and a demonstration of what
 Spangap can do. In a nutshell, Spangap provides layers on top of the ESP32's

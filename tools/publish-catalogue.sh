@@ -44,7 +44,7 @@ if ! gh release view "$tag" --repo "$IMAGES_REPO" >/dev/null 2>&1; then
     gh release create "$tag" \
         --repo "$IMAGES_REPO" \
         --title "Image catalogue: ${cat_name}" \
-        --notes "Firmware images for the \`${cat_name}\` catalogue. The flasher at https://reticulous.github.io/flashmon/ serves a deploy-time copy of these; this release is the durable store." \
+        --notes "Firmware images for the \`${cat_name}\` catalogue. flashmon at https://reticulous.github.io/flashmon/ serves a deploy-time copy of these; this release is the durable store." \
         --latest=false
 fi
 

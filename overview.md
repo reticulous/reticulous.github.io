@@ -12,7 +12,7 @@ platform straddles, which provide the runtime, networking, web UI and LCD shell.
 
 ## The Spangap platform
 
-See the [Spangap overview](https://spangap.org/overview/) for detail.
+See the [Spangap overview]({{ site.spangap_url }}/overview/) for detail.
 
 - **`spangap`** — the build system and CLI: resolves dependencies, builds inside
   Docker, generates the boot glue, flashes and monitors.

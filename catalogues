@@ -3,9 +3,9 @@
 #
 # Every deploy rebuilds the site from scratch, so this list is the whole of what
 # the site offers: a catalogue dropped from here disappears from it at the next
-# deploy, and the flasher's Build selector stops listing it. Removing a name
+# deploy, and flashmon's Build selector stops listing it. Removing a name
 # does not touch the release it came from.
 #
-# `stable` is what the flasher serves when nothing says otherwise.
+# `stable` is what flashmon serves when nothing says otherwise.
 stable
 dev

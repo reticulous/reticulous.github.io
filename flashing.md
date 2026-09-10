@@ -1,8 +1,9 @@
 ---
 title: Flashing
 description: >-
-  Three ways to get Reticulous onto a board: from a Chromium browser over USB,
-  from the command line with a single-file flasher, or fully offline from a zip.
+  Three ways to get Reticulous onto a board: flashmon in the browser over USB,
+  `spangap flash` from a workspace, or a downloaded image driven through
+  esptool by hand.
 ---
 
 <div class="note warning" markdown="1">
@@ -10,11 +11,11 @@ description: >-
 You're literally one of the very first users.
 </div>
 
-If you just want to flash a unit, pick whichever of these fits your machine.
+There are three ways to put an image on a board, and no others.
 
 ## From a browser
 
-Open **[the flasher]({{ '/flashmon/' | relative_url }})** in a Chromium-based
+Open **[flashmon]({{ '/flashmon/' | relative_url }})** in a Chromium-based
 browser (desktop Chrome, Edge, Brave or Opera), plug your board in over USB, and
 click through. It auto-detects which board you have, flashes the matching image
 (or a generic one), and drops into a serial monitor — no toolchain, no build to
@@ -22,35 +23,40 @@ pick, and no install.
 
 Reaching a USB device from a page needs a secure context, which this site is.
 
-## From the command line
+## From a workspace
 
-No Chromium browser, or you'd rather flash from a terminal? Grab the single-file
-terminal flasher. It already knows where to fetch from, so it takes no
-arguments:
+If you have already installed `spangap` to
+[build for yourself]({{ '/building/' | relative_url }}), that same workspace
+flashes:
 
 ```sh
-curl -O https://reticulous.net/flashmon/reticulous-flashmon
-chmod +x reticulous-flashmon
-./reticulous-flashmon
+spangap build reticulous/reticulous --with spangap/hw-lilygo-tdeck
+spangap flash
 ```
 
-Only Python 3.8+ is needed. On first run it sets up its own tools in a private
-folder — nothing system-wide, no admin — then picks your serial port, detects
-the board, flashes, and opens a monitor.
+## By hand, with esptool
 
-## Fully offline
+Download an image zip from the
+[catalogue]({{ '/builds/stable/' | relative_url }}) and unpack it. Inside is a
+`reticulous.esptool` argfile naming every binary and the offset it belongs at,
+so the whole flash is one esptool invocation:
 
-No internet on the target machine, or no Python at all? Download the
-self-contained
-[**offline installer**](https://reticulous.net/flashmon/offline-installer/). It's
-one cross-platform zip bundling the flasher, the firmware images and the
-flashing tools, so it runs on a machine with no internet and no toolchain: unzip
-it, run the `reticulous-flashmon` script inside, and it flashes and monitors
-like the command-line flasher above.
+```sh
+unzip reticulous_hw-lilygo-tdeck_<stamp>.zip -d image
+cd image
+esptool.py --port /dev/ttyACM0 write_flash @reticulous.esptool
+```
 
-<div class="note info" markdown="1">
-On Windows, run `python reticulous-flashmon` from the unzipped folder.
-</div>
+Use this when the browser route is unavailable and you don't want a workspace —
+a machine with no Chromium, or a CI runner.
+
+## Watching the console
+
+Two ways, matching the two that flash: **flashmon** keeps the serial monitor
+open in the browser tab it flashed from, and **`spangap monitor <port>`** does
+the same from a terminal in a workspace. The device's command line is also
+reachable over the network once it is on one — the web UI, and `ssh` — but on
+the wire, serial is those two.
 
 ## After it boots
 

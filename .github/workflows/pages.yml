@@ -4,7 +4,7 @@ name: Deploy site
 # binary in this repo's history:
 #
 #   this repo          the Jekyll pages
-#   spangap/flasher    the flashmon web root, copied to /flashmon/
+#   spangap/flashmon   the flashmon web root, copied to /flashmon/
 #   reticulous images  each catalogue's release, unpacked to /builds/<name>/
 #
 # The last one is why this is an Actions deploy rather than "deploy from a
@@ -14,7 +14,7 @@ name: Deploy site
 # asset route sends one only on its 302, not on the redirect target — so every
 # route fails the CORS check on some hop of the chain. Copying the images into
 # the site at deploy time makes them same-origin with the page that flashes
-# them, which is what the flasher already assumes: it reaches its catalogue at
+# them, which is what flashmon already assumes: it reaches its catalogue at
 # the relative ../builds/<catalogue>/ and builds each image URL from the stamp
 # in that catalogue's index.html. Nothing in flashmon needs to know about any
 # of this.
@@ -39,7 +39,7 @@ env:
   # the image zips plus the index.html, timestamp and builds.yaml that
   # `spangap make-builds` wrote beside them.
   IMAGES_REPO: reticulous/reticulous
-  FLASHER_REPO: spangap/flasher
+  FLASHMON_REPO: spangap/flashmon
 
 permissions:
   contents: read
@@ -59,11 +59,11 @@ jobs:
       - name: Checkout site
         uses: actions/checkout@v4
 
-      - name: Checkout the flasher
+      - name: Checkout flashmon
         uses: actions/checkout@v4
         with:
-          repository: ${{ env.FLASHER_REPO }}
-          path: .flasher
+          repository: ${{ env.FLASHMON_REPO }}
+          path: .flashmon
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
@@ -80,17 +80,17 @@ jobs:
         env:
           JEKYLL_ENV: production
 
-      - name: Add the flasher web root
+      - name: Add the flashmon web root
         run: |
           set -euo pipefail
           # Only the served half of that repo — esp-idf/ and docs/ are the
           # detector's source and its notes, and are not web content.
           mkdir -p _site/flashmon
-          cp -R .flasher/flashmon/. _site/flashmon/
+          cp -R .flashmon/flashmon/. _site/flashmon/
           test -f _site/flashmon/index.html
           test -f _site/flashmon/flashmon.js
           test -f _site/flashmon/detect/spangap_detect.bin
-          echo "flasher: $(cd .flasher && git rev-parse --short HEAD)"
+          echo "flashmon: $(cd .flashmon && git rev-parse --short HEAD)"
 
       - name: Add the image catalogues
         env:
@@ -125,7 +125,7 @@ jobs:
                 curl -fsSL --retry 3 -o "${dest}/${name}" "$url"
               done
             if [ ! -f "${dest}/index.html" ]; then
-              echo "::error::release ${tag} carries no index.html — the flasher lists images from it"
+              echo "::error::release ${tag} carries no index.html — flashmon lists images from it"
               exit 1
             fi
             published="${published}${cat} "

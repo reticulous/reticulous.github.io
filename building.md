@@ -67,5 +67,5 @@ port>]` to find out whether your ESP32 has PSRAM and how much flash it has.
 
 <div class="note info" markdown="1">
 The build system, the straddle model and the container it all runs in are
-documented on the [Spangap site](https://spangap.org/getting-started/).
+documented on the [Spangap site]({{ site.spangap_url }}/getting-started/).
 </div>
