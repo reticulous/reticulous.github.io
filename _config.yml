@@ -1,0 +1,43 @@
+title: Reticulous
+tagline: Reticulum mesh networking for ESP32
+description: >-
+  Reticulous implements the Reticulum mesh networking stack for ESP32 boards,
+  with LXMF messaging, Nomad Network browsing, a web interface, an LCD shell
+  and remote management over the mesh.
+email: rop@spangap.org
+github_org: https://github.com/reticulous
+
+# Set once the site answers on its own domain; until then the URL is the
+# github.io one and the CNAME file is absent.
+url: https://reticulous.github.io
+baseurl: ""
+
+nav:
+  - name: Overview
+    url: /overview/
+  - name: Flashing
+    url: /flashing/
+  - name: Building
+    url: /building/
+
+permalink: pretty
+markdown: kramdown
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+  hard_wrap: false
+
+plugins:
+  - jekyll-sitemap
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
+
+exclude:
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - vendor
