@@ -25,7 +25,6 @@ so the published site is exactly the sum of those three at that moment.
 | `assets/css/site.css` | The whole design, in one file |
 | `index.md`, `overview.md`, … | The pages |
 | `catalogues` | Which image catalogues the site offers |
-| `tools/publish-catalogue.sh` | Uploads a built catalogue and kicks a deploy |
 
 Pages get `layout: default` automatically; only front matter that differs needs
 stating. `permalink: pretty` means `overview.md` is served at `/overview/`, which
@@ -61,19 +60,33 @@ the image zips plus the `index.html`, `timestamp` and `builds.yaml` that
 `spangap make-builds` wrote beside them. The release is the durable store; what
 the site serves is a snapshot copied in at deploy time.
 
-Publishing a rebuilt catalogue:
+Publishing is **`<workspace>/builds/deploy-builds`**, run on the host — one
+script for the whole tree, not one invocation per catalogue:
 
 ```sh
 cd <workspace>/builds/stable && spangap make-builds
-tools/publish-catalogue.sh stable <workspace>/builds/stable
+cd <workspace>/builds && ./deploy-builds            # or --dry-run first
 ```
 
-That uploads the directory, deletes assets the rebuild superseded, and fires a
-`repository_dispatch` that redeploys the site.
+It walks every directory here holding a `builds.yaml`, uploads only what the
+release does not already have at that size, deletes assets the directory no
+longer carries (which is what retires a superseded image, since a new build
+lands under a new stamp and never overwrites its predecessor), and fires one
+`repository_dispatch` at the end if anything moved. `builds/local` is skipped
+unless `--with-local` says otherwise: it holds whatever this machine last
+compiled.
 
 Adding a catalogue means adding its name to `catalogues` and committing — the
 deploy publishes what that file lists, and a name removed from it disappears
-from the site at the next deploy without touching its release.
+from the site at the next deploy without touching its release. `deploy-builds`
+warns when it publishes a catalogue this file does not name, since the symptom
+otherwise is a catalogue that simply never appears.
+
+A catalogue carrying a **`.unlisted`** file is deployed and reachable by naming
+it (`?build=<name>`, or the settings panel's Build selector) but is left out of
+the `/builds/` listing. The marker is uploaded with the rest of the directory,
+and the deploy reads it back — so where a catalogue is offered is decided in one
+place, beside the images.
 
 ### Why the images are copied rather than linked
 

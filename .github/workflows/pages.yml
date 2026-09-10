@@ -128,7 +128,13 @@ jobs:
               echo "::error::release ${tag} carries no index.html — flashmon lists images from it"
               exit 1
             fi
-            published="${published}${cat} "
+            # .unlisted keeps a catalogue out of the listing, not out of the
+            # site: it stays reachable by naming it with ?build=<name>.
+            if [ -f "${dest}/.unlisted" ]; then
+              echo "${cat}: unlisted, served but not offered in the selector"
+            else
+              published="${published}${cat} "
+            fi
             echo "${cat}: $(find "$dest" -name '*.zip' | wc -l) images, $(du -sh "$dest" | cut -f1)"
           done
 
