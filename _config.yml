@@ -41,3 +41,7 @@ exclude:
   - Gemfile
   - Gemfile.lock
   - vendor
+  # Deploy-time inputs, not site content. /flashmon/ and /builds/ are laid in by
+  # .github/workflows/pages.yml after Jekyll has run.
+  - catalogues
+  - tools

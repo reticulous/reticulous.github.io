@@ -14,11 +14,13 @@ If you just want to flash a unit, pick whichever of these fits your machine.
 
 ## From a browser
 
-Open **[reticulous.net/flashmon](https://reticulous.net/flashmon)** in a
-Chromium-based browser (desktop Chrome, Edge, Brave or Opera), plug your board in
-over USB, and click through. It auto-detects which board you have, flashes the
-matching image (or a generic one), and drops into a serial monitor — no
-toolchain, no build to pick, and no install.
+Open **[the flasher]({{ '/flashmon/' | relative_url }})** in a Chromium-based
+browser (desktop Chrome, Edge, Brave or Opera), plug your board in over USB, and
+click through. It auto-detects which board you have, flashes the matching image
+(or a generic one), and drops into a serial monitor — no toolchain, no build to
+pick, and no install.
+
+Reaching a USB device from a page needs a secure context, which this site is.
 
 ## From the command line
 

@@ -1,0 +1,163 @@
+name: Deploy site
+
+# The published site is assembled from three sources, none of which puts a
+# binary in this repo's history:
+#
+#   this repo          the Jekyll pages
+#   spangap/flasher    the flashmon web root, copied to /flashmon/
+#   reticulous images  each catalogue's release, unpacked to /builds/<name>/
+#
+# The last one is why this is an Actions deploy rather than "deploy from a
+# branch". A browser cannot fetch a GitHub release asset: neither
+# github.com/…/releases/download/… nor the signed release-assets.githubusercontent.com
+# URL it redirects to carries access-control-allow-origin, and the api.github.com
+# asset route sends one only on its 302, not on the redirect target — so every
+# route fails the CORS check on some hop of the chain. Copying the images into
+# the site at deploy time makes them same-origin with the page that flashes
+# them, which is what the flasher already assumes: it reaches its catalogue at
+# the relative ../builds/<catalogue>/ and builds each image URL from the stamp
+# in that catalogue's index.html. Nothing in flashmon needs to know about any
+# of this.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      catalogues:
+        description: 'Override the catalogues file, space separated (one-off)'
+        required: false
+        default: ''
+  # `tools/publish-catalogue.sh` fires this after uploading a catalogue, so a
+  # new image is on the site without a commit.
+  repository_dispatch:
+    types: [catalogue-published]
+
+env:
+  # Where the catalogue releases live. Each catalogue is one release, tagged
+  # catalogue-<name>, whose assets are the contents of builds/<name>/ verbatim:
+  # the image zips plus the index.html, timestamp and builds.yaml that
+  # `spangap make-builds` wrote beside them.
+  IMAGES_REPO: reticulous/reticulous
+  FLASHER_REPO: spangap/flasher
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# One deploy at a time, and never cancel one halfway: a half-published site is
+# a site that flashes half an image.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout site
+        uses: actions/checkout@v4
+
+      - name: Checkout the flasher
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.FLASHER_REPO }}
+          path: .flasher
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.3'
+          bundler-cache: true
+
+      - name: Configure Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Build the Jekyll site
+        run: bundle exec jekyll build --baseurl "${{ steps.pages.outputs.base_path }}"
+        env:
+          JEKYLL_ENV: production
+
+      - name: Add the flasher web root
+        run: |
+          set -euo pipefail
+          # Only the served half of that repo — esp-idf/ and docs/ are the
+          # detector's source and its notes, and are not web content.
+          mkdir -p _site/flashmon
+          cp -R .flasher/flashmon/. _site/flashmon/
+          test -f _site/flashmon/index.html
+          test -f _site/flashmon/flashmon.js
+          test -f _site/flashmon/detect/spangap_detect.bin
+          echo "flasher: $(cd .flasher && git rev-parse --short HEAD)"
+
+      - name: Add the image catalogues
+        env:
+          CATALOGUE_OVERRIDE: ${{ github.event.inputs.catalogues }}
+        run: |
+          set -euo pipefail
+          # Every deploy rebuilds _site from nothing, so this must always be the
+          # full set the site offers — never just the catalogue that happened to
+          # trigger the run, or the others would vanish from it.
+          if [ -n "${CATALOGUE_OVERRIDE}" ]; then
+            CATALOGUES="${CATALOGUE_OVERRIDE}"
+          else
+            CATALOGUES="$(sed -e 's/#.*//' catalogues | tr -s '[:space:]' ' ')"
+          fi
+          echo "catalogues: ${CATALOGUES}"
+          api="https://api.github.com/repos/${IMAGES_REPO}/releases/tags"
+          published=""
+          for cat in $CATALOGUES; do
+            tag="catalogue-${cat}"
+            body="$(curl -fsSL -H 'Accept: application/vnd.github+json' "${api}/${tag}" || true)"
+            if [ -z "$body" ]; then
+              echo "::warning::no release ${tag} in ${IMAGES_REPO} — catalogue '${cat}' will be absent"
+              continue
+            fi
+            dest="_site/builds/${cat}"
+            mkdir -p "$dest"
+            # Every asset, named as it was uploaded: the release IS the
+            # catalogue directory, so nothing here needs to know which files a
+            # catalogue is made of.
+            printf '%s' "$body" | jq -r '.assets[] | [.name, .browser_download_url] | @tsv' \
+            | while IFS="$(printf '\t')" read -r name url; do
+                curl -fsSL --retry 3 -o "${dest}/${name}" "$url"
+              done
+            if [ ! -f "${dest}/index.html" ]; then
+              echo "::error::release ${tag} carries no index.html — the flasher lists images from it"
+              exit 1
+            fi
+            published="${published}${cat} "
+            echo "${cat}: $(find "$dest" -name '*.zip' | wc -l) images, $(du -sh "$dest" | cut -f1)"
+          done
+
+          # The catalogue selector reads this: directory links, one per
+          # catalogue that actually got published above.
+          if [ -n "$published" ]; then
+            {
+              echo '<!doctype html>'
+              echo '<meta charset="utf-8">'
+              echo '<title>Image catalogues</title>'
+              echo '<h1>Image catalogues</h1>'
+              echo '<ul>'
+              for cat in $published; do
+                printf '<li><a href="%s/">%s</a></li>\n' "$cat" "$cat"
+              done
+              echo '</ul>'
+            } > _site/builds/index.html
+          fi
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
