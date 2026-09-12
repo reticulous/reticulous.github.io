@@ -27,11 +27,12 @@ firmware can start with a rich environment all ready to go.
 <li><a href="{{ '/overview/' | relative_url }}"><b>What is in it</b><span>The straddle map: the Reticulum stack, the interfaces, the apps.</span></a></li>
 </ul>
 
-<div class="note warning" markdown="1">
-**It is really early days.** Some stuff doesn't work yet, some stuff looks ugly.
-You are literally one of the very first users. Things will shift, and important
-bits are either missing or will change shape.
-</div>
+<figure class="shot">
+<button type="button"><img src="{{ '/assets/img/web-ui.png' | relative_url }}" width="3200" height="2400" alt="The Reticulous web interface: overlapping windows above a dock, showing the SSH settings pane, an LXMF conversation, a CLI running rnsh into another node, the Nomad Network browser on a forum page, and a live log."></button>
+<figcaption>The web interface a board serves: settings, LXMF messaging, the command
+line, the Nomad Network browser and the live log, all of it out of the ESP32 in
+your hand. Click to enlarge.</figcaption>
+</figure>
 
 ## Supported hardware
 

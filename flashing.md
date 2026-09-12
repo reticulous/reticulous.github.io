@@ -6,11 +6,6 @@ description: >-
   esptool by hand.
 ---
 
-<div class="note warning" markdown="1">
-**It is really early days.** Some stuff doesn't work yet, some stuff looks ugly.
-You're literally one of the very first users.
-</div>
-
 There are three ways to put an image on a board, and no others.
 
 ## From a browser

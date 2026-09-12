@@ -304,6 +304,54 @@ th{font-weight:900;text-transform:uppercase;font-size:.8em;letter-spacing:.06em;
 .cards b{display:block;font-weight:900;color:var(--link);margin-bottom:4px}
 .cards span{display:block;font-size:.9em;line-height:1.45;color:var(--ink-dim)}
 
+/* ---------- screenshots ---------- */
+.shot{margin:30px 0;padding:0}
+.shot button{
+  display:block;
+  width:100%;
+  margin:0;
+  padding:0;
+  border:0;
+  background:none;
+  font:inherit;
+  cursor:zoom-in;
+  border-radius:5px;
+}
+.shot img{
+  display:block;
+  width:100%;
+  height:auto;
+  border-radius:5px;
+  box-shadow:var(--raise);
+}
+.shot figcaption{
+  margin-top:10px;
+  font-size:.7em;
+  font-weight:400;
+  line-height:1.45;
+  color:var(--ink-dim);
+}
+
+/* The enlarged view: one overlay in the page chrome, filled in on click. */
+.lightbox{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+  background:rgba(0,0,0,.9);
+  cursor:zoom-out;
+}
+.lightbox[hidden]{display:none}
+.lightbox img{
+  max-width:100%;
+  max-height:100%;
+  border-radius:5px;
+  box-shadow:0 10px 40px rgba(0,0,0,.6);
+}
+
 /* ---------- footer ---------- */
 .sitefoot{
   flex-shrink:0;

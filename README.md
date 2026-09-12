@@ -12,8 +12,10 @@ branch", for the reason in **The images** below.
 | `/flashmon/` | `spangap/flashmon` | checked out and copied at deploy time |
 | `/builds/<catalogue>/` | releases in `reticulous/reticulous` | downloaded at deploy time |
 
-Nothing binary is committed here. Every deploy rebuilds the site from scratch,
-so the published site is exactly the sum of those three at that moment.
+No build output is committed here — the only binaries in the repo are the
+screenshots in `assets/img/`, which are site content. Every deploy rebuilds the
+site from scratch, so the published site is exactly the sum of those three at
+that moment.
 
 ## Layout
 
@@ -23,6 +25,7 @@ so the published site is exactly the sum of those three at that moment.
 | `_layouts/default.html` | The page chrome: header, sidebar, article card, footer |
 | `_layouts/doc.html` | Bare skeleton for standalone documents that carry their own CSS |
 | `assets/css/site.css` | The whole design, in one file |
+| `assets/img/` | Screenshots the pages show |
 | `index.md`, `overview.md`, … | The pages |
 | `catalogues` | Which image catalogues the site offers |
 
@@ -32,7 +35,23 @@ is what the `nav:` entries in `_config.yml` point at — add a page and its nav
 entry together.
 
 The design is shared with [spangap.github.io](https://github.com/spangap/spangap.github.io);
-`--brand` in `site.css` is the one token that differs between the two.
+`site.css` and `_layouts/` are identical in the two repos and `--brand` is the
+one token that differs, so a change to either belongs in both.
+
+A screenshot goes in as a `figure.shot` whose image is wrapped in a button —
+`default.html` carries one overlay and a delegating click handler, so that
+markup is the whole of it and clicking the shot enlarges it (click anywhere, or
+Esc, to dismiss):
+
+```html
+<figure class="shot">
+<button type="button"><img src="{{ '/assets/img/web-ui.png' | relative_url }}" width="3200" height="2400" alt="…"></button>
+<figcaption>…</figcaption>
+</figure>
+```
+
+State the file's real pixel dimensions in `width`/`height` — the CSS scales it
+to the column, and the attributes keep the page from reflowing as it loads.
 
 ## Working on it
 
@@ -68,13 +87,25 @@ cd <workspace>/builds/stable && spangap make-builds
 cd <workspace>/builds && ./deploy-builds            # or --dry-run first
 ```
 
-It walks every directory here holding a `builds.yaml`, uploads only what the
-release does not already have at that size, deletes assets the directory no
-longer carries (which is what retires a superseded image, since a new build
-lands under a new stamp and never overwrites its predecessor), and fires one
-`repository_dispatch` at the end if anything moved. `builds/local` is skipped
-unless `--with-local` says otherwise: it holds whatever this machine last
-compiled.
+It walks every directory here holding a `builds.yaml`, brings its release into
+line with what the directory holds, and fires one `repository_dispatch` at the
+end if anything moved. Assets the directory no longer carries are deleted, which
+is what retires a superseded image: a new build lands under a new stamp and
+never overwrites its predecessor.
+
+What counts as changed differs by kind. An image is settled by its name and
+size, since the stamp in a zip's name is unique to the build inside it.
+`index.html`, `timestamp` and `builds.yaml` are rewritten in place by every
+`spangap make-builds` and keep both their names and, as a rule, their sizes — a
+stamp is fixed-width, and an index listing the same images under new stamps is
+the same length it was — so the release's own copies are fetched and compared
+byte for byte.
+
+Two catalogues are held back from a bare run: `builds/local`, which is whatever
+this machine last compiled, and any directory carrying a `.nodeploy` marker.
+Naming a catalogue on the command line (`./deploy-builds rop`) publishes it
+regardless — asking for it by name is the deliberate act the marker exists to
+require.
 
 Adding a catalogue means adding its name to `catalogues` and committing — the
 deploy publishes what that file lists, and a name removed from it disappears
