@@ -130,10 +130,37 @@ Front matter switches Liquid on for that file, so a document containing `{{` or
 
 ## The domain
 
-The site answers on `reticulous.github.io` until a `CNAME` file naming
-`reticulous.net` is committed and the DNS records point at GitHub.
+The site is **`reticulous.net`**. Two things put it there, and only one of them
+lives in a repo at all:
 
-The deploy now carries everything `reticulous.net/flashmon/` serves, so the
+```
+reticulous.net.        A      185.199.108.153
+reticulous.net.        A      185.199.109.153
+reticulous.net.        A      185.199.110.153
+reticulous.net.        A      185.199.111.153
+reticulous.net.        AAAA   2606:50c0:8000::153
+reticulous.net.        AAAA   2606:50c0:8001::153
+reticulous.net.        AAAA   2606:50c0:8002::153
+reticulous.net.        AAAA   2606:50c0:8003::153
+www.reticulous.net.    CNAME  reticulous.github.io.
+```
+
+…and **Settings → Pages → Custom domain** on this repo, holding
+`reticulous.net`, with **Enforce HTTPS** ticked once GitHub has issued the
+certificate. All four A records are GitHub's published apex set and belong in
+the zone together; the `www` record points at the org's `reticulous.github.io`,
+not at the apex, and GitHub answers it with a redirect to whichever of the two
+the Pages setting names.
+
+There is deliberately **no `CNAME` file** here. That file is how a site
+published *from a branch* names its domain. A site published by a workflow —
+which this one is, for the reason in **The images** — carries its domain only in
+the Pages setting: GitHub writes no `CNAME` file for such a deploy and ignores
+one that turns up in the uploaded artifact. `url:` in `_config.yml` names the
+domain as well, but only so Jekyll can build canonical links and the sitemap; it
+decides nothing about what the site answers on.
+
+The deploy carries everything `reticulous.net/flashmon/` serves, so the
 cutover moves no path with it. `spangap.org/install.sh` is still on nginx and
 still what `building.md` tells people to pipe into a shell; it has to survive
 the day `spangap.org` moves.

@@ -7,9 +7,11 @@ description: >-
 email: rop@spangap.org
 github_org: https://github.com/reticulous
 
-# Set once the site answers on its own domain; until then the URL is the
-# github.io one and the CNAME file is absent.
-url: https://reticulous.github.io
+# The site's own domain. Jekyll builds `absolute_url` — the canonical link and
+# every entry in the sitemap — from this, so it is the one place the domain is
+# stated in the site's content. Which host the deploy actually answers on is a
+# separate setting, in the repo's Pages configuration; see README, "The domain".
+url: https://reticulous.net
 baseurl: ""
 
 # The sibling site. Every cross-site link goes through this, so the two move
