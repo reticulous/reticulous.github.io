@@ -1,7 +1,8 @@
 /* The jekyllrb.com design, rebuilt: Lato on a dark ground, content in a raised
-   card, gold links, and the notched note boxes. Same greys and type scale;
+   card, gold links, and the notched note boxes. Same greys;
    modern layout primitives instead of floats and vendor prefixes.
-   --brand is the only per-site value — the notch accent and the hero rule. */
+   --brand is the only per-site value — the logo dot, the rule under the hero
+   tagline, and the current item in the sidebar. */
 :root{
   color-scheme:dark;
 
@@ -40,7 +41,7 @@ html{scroll-behavior:smooth}
 body{
   margin:0;
   font-family:"Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size:21px;
+  font-size:26px;
   font-weight:300;
   line-height:1.5;
   color:var(--ink);
@@ -62,7 +63,7 @@ h1,h2,h3,h4,h5,h6{margin:0;font-weight:400;line-height:1.2}
 strong,b{font-weight:700}
 em,i{font-style:italic}
 
-.wrap{max-width:978px;margin:0 auto;padding:0 10px;width:100%}
+.wrap{max-width:1223px;margin:0 auto;padding:0 10px;width:100%}
 
 /* ---------- header ---------- */
 .masthead{padding:15px 0;background:var(--header);text-shadow:0 1px 3px rgba(0,0,0,.5)}
@@ -74,7 +75,7 @@ em,i{font-style:italic}
   min-height:50px;
 }
 .logo{
-  font-size:28px;
+  font-size:35px;
   font-weight:900;
   letter-spacing:-.02em;
   color:var(--ink-bright);
@@ -120,14 +121,14 @@ em,i{font-style:italic}
 /* ---------- hero, on the landing page ---------- */
 .intro{padding:40px 0 30px;text-align:center}
 .intro p{
-  font-size:clamp(1.75em,5vw,3.2em);
+  font-size:clamp(1.75em,6.25vw,3.2em);
   line-height:1.05;
   margin:0;
   font-weight:300;
   color:var(--ink-bright);
 }
 .intro .tagline{
-  font-size:clamp(.85em,2.4vw,1.05em);
+  font-size:clamp(.85em,3vw,1.05em);
   color:var(--ink-dim);
   margin-top:18px;
   text-transform:uppercase;
@@ -152,7 +153,7 @@ em,i{font-style:italic}
 }
 
 /* ---------- sidebar ---------- */
-.section-nav{padding:20px 10px 0;font-size:16px}
+.section-nav{padding:20px 10px 0;font-size:20px}
 .section-nav h4{
   font-size:.75em;
   text-transform:uppercase;
@@ -185,7 +186,7 @@ article{
   padding:20px;
   margin:0 10px;
   box-shadow:0 3px 10px rgba(0,0,0,.1);
-  font-size:16px;
+  font-size:20px;
 }
 @media (max-width:568px){article{margin:0;border-radius:0}}
 
@@ -209,7 +210,7 @@ blockquote{
   padding-left:20px;
   margin:1.5em 0;
   font-style:italic;
-  font-size:18px;
+  font-size:23px;
   font-weight:500;
 }
 blockquote p:last-child{margin-bottom:0}
@@ -267,7 +268,7 @@ th{font-weight:900;text-transform:uppercase;font-size:.8em;letter-spacing:.06em;
   position:absolute;
   top:15px;
   left:19px;
-  font-size:28px;
+  font-size:35px;
   font-weight:700;
   text-shadow:0 -1px 0 rgba(0,0,0,.5);
 }
@@ -308,7 +309,7 @@ th{font-weight:900;text-transform:uppercase;font-size:.8em;letter-spacing:.06em;
   flex-shrink:0;
   margin-top:40px;
   padding:25px 0 15px;
-  font-size:15px;
+  font-size:19px;
   font-weight:400;
   color:var(--ink-dim);
   background-color:var(--foot);
