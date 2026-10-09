@@ -84,3 +84,5 @@ These are the `--with` target, provided as Spangap-org straddles.
   thumb-sized LoRa (SX1262) kit (headless).
 - **`spangap/hw-lilygo-t3s3-sx1262`** — LilyGo T3-S3 (LoRa32): SX1262 + microSD
   (headless).
+- **`spangap/hw-lilygo-t3s3-lr1121`** — LilyGo T3-S3 (LoRa32): dual-band LR1121
+  + microSD (headless).
