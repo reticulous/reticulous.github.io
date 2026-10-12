@@ -69,22 +69,24 @@ what you previewed. Commit the one `bundle install` writes.
 
 A local preview has no `/flashmon/` and no `/builds/` — those are laid in by the
 deploy. To exercise flashmon locally, use `spangap flashmon` in the workspace,
-which serves the page and `builds/local` the way it always has.
+which serves the page and the workspace's `reticulous-builds/` (its `local`
+catalogue included) as `/builds/`.
 
 ## The images
 
 Each catalogue is **one release** in `reticulous/reticulous`, tagged
-`catalogue-<name>`, whose assets are the contents of `builds/<name>/` verbatim:
+`catalogue-<name>`, whose assets are the contents of the workspace's
+`reticulous-builds/<name>/` verbatim:
 the image zips plus the `index.html`, `timestamp` and `builds.yaml` that
 `spangap make-builds` wrote beside them. The release is the durable store; what
 the site serves is a snapshot copied in at deploy time.
 
-Publishing is **`<workspace>/builds/deploy-builds`**, run on the host — one
-script for the whole tree, not one invocation per catalogue:
+Publishing is **`<workspace>/reticulous-builds/deploy-builds`**, run on the
+host — one script for the whole tree, not one invocation per catalogue:
 
 ```sh
-cd <workspace>/builds/stable && spangap make-builds
-cd <workspace>/builds && ./deploy-builds            # or --dry-run first
+cd <workspace>/reticulous-builds/stable && spangap make-builds
+cd <workspace>/reticulous-builds && ./deploy-builds   # or --dry-run first
 ```
 
 It walks every directory here holding a `builds.yaml`, brings its release into
@@ -101,7 +103,7 @@ stamp is fixed-width, and an index listing the same images under new stamps is
 the same length it was — so the release's own copies are fetched and compared
 byte for byte.
 
-Two catalogues are held back from a bare run: `builds/local`, which is whatever
+Two catalogues are held back from a bare run: `local`, which is whatever
 this machine last compiled, and any directory carrying a `.nodeploy` marker.
 Naming a catalogue on the command line (`./deploy-builds rop`) publishes it
 regardless — asking for it by name is the deliberate act the marker exists to

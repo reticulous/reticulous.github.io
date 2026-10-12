@@ -28,7 +28,7 @@ on:
         description: 'Override the catalogues file, space separated (one-off)'
         required: false
         default: ''
-  # The workspace's builds/deploy-builds (or `spangap publish-builds --notify`)
+  # The workspace's reticulous-builds/deploy-builds (or `spangap publish-builds --notify`)
   # fires this after uploading a catalogue, so a new image is on the site
   # without a commit.
   repository_dispatch:
@@ -36,7 +36,8 @@ on:
 
 env:
   # Where the catalogue releases live. Each catalogue is one release, tagged
-  # catalogue-<name>, whose assets are the contents of builds/<name>/ verbatim:
+  # catalogue-<name>, whose assets are the contents of the workspace's
+  # reticulous-builds/<name>/ verbatim:
   # the image zips plus the index.html, timestamp and builds.yaml that
   # `spangap make-builds` wrote beside them.
   IMAGES_REPO: reticulous/reticulous
