@@ -17,7 +17,7 @@ baseurl: ""
 # The sibling site. Every cross-site link goes through this, so the two move
 # to their own domains one line at a time instead of one link at a time. Links
 # inside this site use `relative_url` and need no such thing.
-spangap_url: https://spangap.github.io
+spangap_url: https://spangap.org
 
 nav:
   - name: Overview

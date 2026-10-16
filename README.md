@@ -1,4 +1,4 @@
-# reticulous.github.io
+# reticulous.net
 
 The Reticulous website, and the flashmon page it serves. Published by
 `.github/workflows/pages.yml` — a GitHub Actions deploy, not "deploy from a
@@ -34,7 +34,7 @@ stating. `permalink: pretty` means `overview.md` is served at `/overview/`, whic
 is what the `nav:` entries in `_config.yml` point at — add a page and its nav
 entry together.
 
-The design is shared with [spangap.github.io](https://github.com/spangap/spangap.github.io);
+The design is shared with [spangap.org](https://github.com/spangap/spangap.org);
 `site.css` and `_layouts/` are identical in the two repos and `--brand` is the
 one token that differs, so a change to either belongs in both.
 
@@ -194,6 +194,6 @@ domain as well, but only so Jekyll can build canonical links and the sitemap; it
 decides nothing about what the site answers on.
 
 The deploy carries everything `reticulous.net/flashmon/` serves, so the
-cutover moves no path with it. `spangap.org/install.sh` is still on nginx and
-still what `building.md` tells people to pipe into a shell; it has to survive
-the day `spangap.org` moves.
+cutover moves no path with it. `spangap.org/install.sh`, which `building.md`
+tells people to pipe into a shell, is the sibling site's to serve; its README
+says how.

@@ -5,20 +5,15 @@ description: >-
   it. All the host needs is Docker, git and Python.
 ---
 
-Much more interesting than just flashing your device is to install `spangap` and
-compile for yourself.
-
-At this very early stage of their development, both Spangap and Reticulous still
-lack some of the documentation they will have soon. But to get you started if
-you can't wait for everything to be finished, here is a very quick description of
-how to build and flash the software.
+Building Reticulous yourself takes one install and two commands. The
+documentation is still catching up with the code, but this is enough to get a
+build onto a board.
 
 ## What the host needs
 
-`docker`, installed and running, plus `python`, `git` and `curl`. Nothing will be
-installed on your system outside of the spangap project directory you
-initialize. The procedure below should work for Linux, Mac and possibly also for
-Windows Subsystem for Linux — the latter untested as of now.
+Docker (installed and running), Python 3, git and curl. Everything else lands
+inside the workspace directory you create. Linux and Mac work; Windows
+Subsystem for Linux is untested.
 
 ## A worked example
 
@@ -39,8 +34,8 @@ cd reticulous && \
 spangap monitor /dev/cu.usbmodem2101
 ```
 
-Leave `spangap monitor` running. It shows you the device log output, and once
-we're done it will let you switch to CLI mode by simply typing a command.
+Leave it running: it shows the device log, and later you can type commands
+into it.
 
 Now open another terminal window and do:
 
@@ -50,8 +45,10 @@ spangap build reticulous/reticulous --with spangap/hw-lilygo-tdeck && \
 spangap flash
 ```
 
-After downloading and building, it tells the monitor window to flash the
-firmware. When that's done the device resets and comes alive.
+This downloads the sources, builds, and hands the image to the monitor window
+to flash. The device then reboots into Reticulous. The
+[flashing page]({{ '/flashing/' | relative_url }}#after-it-boots) says how to
+get it onto your WiFi and set a password.
 
 ## Building for a different board
 
@@ -60,10 +57,10 @@ Replace `hw-lilygo-tdeck` with any of the other board straddles listed in the
 `hw-meshnology-w12`, `hw-wismesh-tap-v2` and the rest.
 
 Leave off `--with ...` entirely to get the generic build, which works on any
-ESP32-S3 with at least 4 MB of PSRAM and 8 MB of flash. To target a generic board
-whose flash size you need to state, use `--flash-size <n>`, where `<n>` is the
-number of megabytes of flash your ESP32-S3 has. Use `spangap probe [<serial
-port>]` to find out whether your ESP32 has PSRAM and how much flash it has.
+ESP32-S3 with at least 4 MB of PSRAM and 8 MB of flash. For the generic build
+you state the flash size: `--flash-size <n>`, with `<n>` the megabytes of flash
+your board has. Use `spangap probe [<serial port>]` to find out whether your
+ESP32 has PSRAM and how much flash it has.
 
 <div class="note info" markdown="1">
 The build system, the straddle model and the container it all runs in are

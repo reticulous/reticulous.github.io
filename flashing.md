@@ -6,7 +6,7 @@ description: >-
   esptool by hand.
 ---
 
-There are three ways to put an image on a board, and no others.
+There are three ways to put an image on a board.
 
 ## From a browser
 
@@ -16,7 +16,23 @@ click through. It auto-detects which board you have, flashes the matching image
 (or a generic one), and drops into a serial monitor — no toolchain, no build to
 pick, and no install.
 
-Reaching a USB device from a page needs a secure context, which this site is.
+## After it boots
+
+The device starts a WiFi access point whose name starts with `reticulous_`.
+Connect to it and open `https://reticulous.local` for the web interface. A
+board with a screen also shows a phone-like UI on the LCD.
+
+To put the device on your own WiFi instead, type `net add <ssid> <password>`
+in the serial monitor (quote the password if it has spaces). You can, and
+should, set a password for the web interface from your browser at
+`https://reticulous.local` or by typing `passwd` in the serial monitor. Setting
+a password also lets you log in to the device command line with
+`ssh admin@reticulous.local`.
+
+flashmon keeps a serial monitor open in the tab it flashed from; in a
+workspace, `spangap monitor <port>` does the same in a terminal. Once the
+device is on a network you can also reach its command line from the web UI or
+over `ssh`.
 
 ## From a workspace
 
@@ -42,29 +58,7 @@ cd image
 esptool.py --port /dev/ttyACM0 write_flash @reticulous.esptool
 ```
 
-Use this when the browser route is unavailable and you don't want a workspace —
-a machine with no Chromium, or a CI runner.
-
-## Watching the console
-
-Two ways, matching the two that flash: **flashmon** keeps the serial monitor
-open in the browser tab it flashed from, and **`spangap monitor <port>`** does
-the same from a terminal in a workspace. The device's command line is also
-reachable over the network once it is on one — the web UI, and `ssh` — but on
-the wire, serial is those two.
-
-## After it boots
-
-The device comes alive and presents a full-featured web interface on a built-in
-access point whose SSID starts with `reticulous_`, plus — on a board with a
-screen — a smartphone-like UI on the LCD.
-
-To have the device meet you on your own WiFi network instead, go to the serial
-window and type `net add <ssid> <password>` (use quotes if your password has
-spaces). You can, and should, set a password for the web interface from your
-browser at `https://reticulous.local` or by typing `passwd` in the serial
-monitor. Setting a password also lets you log in to the device command line with
-`ssh admin@reticulous.local`.
+Use this on a machine without a Chromium browser, or from a CI job.
 
 Building it yourself is
 [the more interesting path]({{ '/building/' | relative_url }}).
